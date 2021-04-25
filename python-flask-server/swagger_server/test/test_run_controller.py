@@ -56,7 +56,7 @@ class TestRunController(BaseTestCase):
         Creates a new run
         """
         query_string = [('distance', 3.4),
-                        ('elevation_gain', 0),
+                        ('elevation_gain', 3.4),
                         ('type', 'type_example'),
                         ('time_start', 56),
                         ('duration', 789),
@@ -76,7 +76,7 @@ class TestRunController(BaseTestCase):
         """
         query_string = [('route_id', 789),
                         ('distance', 3.4),
-                        ('elevation_gain', 0),
+                        ('elevation_gain', 3.4),
                         ('type', 'type_example'),
                         ('time_start', 56),
                         ('duration', 789),

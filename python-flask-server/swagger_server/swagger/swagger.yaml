@@ -166,7 +166,6 @@ paths:
           \ will be used)"
         required: false
         type: "number"
-        default: 0
         format: "float"
       - name: "type"
         in: "query"
@@ -256,7 +255,6 @@ paths:
           \ will be used)"
         required: false
         type: "number"
-        default: 0
         format: "float"
       - name: "type"
         in: "query"
@@ -831,14 +829,13 @@ definitions:
       note:
         type: "string"
         description: "if null: fields istn't part of json object"
-        default: "null"
       group_id:
         type: "integer"
         format: "int64"
         description: "if null: fields istn't part of json object"
     example:
       duration: 2
-      note: "null"
+      note: "note"
       route_id: 1
       distance: 5.962134
       time_start: "2000-01-23T04:56:07.000+00:00"
@@ -883,14 +880,13 @@ definitions:
       note:
         type: "string"
         description: "if null: fields istn't part of json object"
-        default: "null"
       group_id:
         type: "integer"
         format: "int64"
         description: "if null: fields istn't part of json object"
     example:
       duration: 2
-      note: "null"
+      note: "note"
       route_id: 1
       distance: 5.962134
       time_start: "2000-01-23T04:56:07.000+00:00"
@@ -913,45 +909,36 @@ definitions:
       description:
         type: "string"
         description: "if null: fields istn't part of json object"
-        default: "null"
       score:
         type: "number"
         format: "float"
-        default: 0.0
       run_count:
         type: "integer"
         format: "int64"
-        default: 0
       num_participants:
         type: "integer"
         format: "int64"
-        default: 0
       sum_duration:
         type: "integer"
         format: "int64"
-        default: 0
       sum_distance_walk:
         type: "number"
         format: "float"
-        default: 0.0
       sum_distance_run:
         type: "number"
         format: "float"
-        default: 0.0
       sum_distance_bike:
         type: "number"
         format: "float"
-        default: 0.0
       sum_distance_ebike:
         type: "number"
         format: "float"
-        default: 0.0
     example:
       sum_distance_ebike: 2.027123
       score: 1.4658129
       creator_id: 6
       name: "name"
-      description: "null"
+      description: "description"
       sum_duration: 2
       sum_distance_walk: 7.0614014
       num_participants: 5

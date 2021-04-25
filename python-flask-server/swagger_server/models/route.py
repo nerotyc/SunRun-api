@@ -15,7 +15,7 @@ class Route(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, creator_id: int=None, route_id: int=None, distance: float=None, elevation_gain: float=None, type: str=None, time_start: datetime=None, duration: int=None, note: str='null', group_id: int=None):  # noqa: E501
+    def __init__(self, id: int=None, creator_id: int=None, route_id: int=None, distance: float=None, elevation_gain: float=None, type: str=None, time_start: datetime=None, duration: int=None, note: str=None, group_id: int=None):  # noqa: E501
         """Route - a model defined in Swagger
 
         :param id: The id of this Route.  # noqa: E501

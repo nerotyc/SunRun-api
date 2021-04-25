@@ -15,7 +15,7 @@ class Group(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, creator_id: int=None, name: str=None, description: str='null', score: float=0.0, run_count: int=0, num_participants: int=0, sum_duration: int=0, sum_distance_walk: float=0.0, sum_distance_run: float=0.0, sum_distance_bike: float=0.0, sum_distance_ebike: float=0.0):  # noqa: E501
+    def __init__(self, id: int=None, creator_id: int=None, name: str=None, description: str=None, score: float=None, run_count: int=None, num_participants: int=None, sum_duration: int=None, sum_distance_walk: float=None, sum_distance_run: float=None, sum_distance_bike: float=None, sum_distance_ebike: float=None):  # noqa: E501
         """Group - a model defined in Swagger
 
         :param id: The id of this Group.  # noqa: E501

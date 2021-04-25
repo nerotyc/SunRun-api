@@ -1,0 +1,1449 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "SunRun Version 1 of HTTP API.\n Please note: This api does not provide all of the functions which are convered by the webapp (e.g. registration)",
+    "version": "1.0.0",
+    "title": "SunRun API Documentation",
+    "termsOfService": "https://djk-sonnen.de/terms/",
+    "contact": {
+      "email": "info@nerotecs.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "host": "127.0.0.1:8000",
+  "basePath": "/api/v1/",
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Access to SunRun auth",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://djk-sonnen.de/"
+      }
+    },
+    {
+      "name": "user",
+      "description": "Access to SunRun users",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://djk-sonnen.de/"
+      }
+    },
+    {
+      "name": "run",
+      "description": "Access to SunRun runs",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://djk-sonnen.de/"
+      }
+    },
+    {
+      "name": "route",
+      "description": "Access to SunRun routes",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://djk-sonnen.de/"
+      }
+    },
+    {
+      "name": "group",
+      "description": "Access to SunRun groups",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://djk-sonnen.de/"
+      }
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/auth/login/": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Fetching an access_token by username & password request",
+        "description": "",
+        "operationId": "authLogin",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "description": "The username for login",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "The password for login in clear text",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          },
+          "400": {
+            "description": "Invalid username/password supplied",
+            "schema": {
+              "$ref": "#/definitions/BadLoginResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/test-token/": {
+      "get": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Test if access_token is valid",
+        "description": "",
+        "operationId": "testToken",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          }
+        }
+      }
+    },
+    "/user/user-id/": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Gets user_id and profile_id of currently logged in user.",
+        "description": "",
+        "operationId": "userId",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/UserIds"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/run/{run_id}/": {
+      "get": {
+        "tags": [
+          "run"
+        ],
+        "summary": "Find run by id",
+        "description": "Returns a single run",
+        "operationId": "getRunById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "id of run to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/Run"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Run not found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/run/create/": {
+      "post": {
+        "tags": [
+          "run"
+        ],
+        "summary": "Creates a new run",
+        "description": "",
+        "operationId": "runCreate",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "traveled distance (when route specified route.distance will be used)",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "elevation_gain",
+            "in": "query",
+            "description": "traveled acceleration (when route specified route.elevation_gain will be used)",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "activitiy type",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "WALK",
+              "RUN",
+              "BIKE",
+              "E-BIKE"
+            ]
+          },
+          {
+            "name": "time_start",
+            "in": "query",
+            "description": "time when the run started",
+            "required": false,
+            "type": "integer",
+            "format": "date-time"
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "description": "id of run's route",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "id of run's route",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "note",
+            "in": "query",
+            "description": "id of run's route",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/SavedResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/BadRequestResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Run not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/run/edit/{run_id}/": {
+      "put": {
+        "tags": [
+          "run"
+        ],
+        "summary": "Update an existing pet",
+        "description": "",
+        "operationId": "runUpdate",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "id of run to edit",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "route_id",
+            "in": "query",
+            "description": "id of run's route",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "traveled distance (when route specified route.distance will be used)",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "elevation_gain",
+            "in": "query",
+            "description": "traveled acceleration (when route specified route.elevation_gain will be used)",
+            "required": false,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "activitiy type",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "WALK",
+              "RUN",
+              "BIKE",
+              "E-BIKE"
+            ]
+          },
+          {
+            "name": "time_start",
+            "in": "query",
+            "description": "time when the run started",
+            "required": false,
+            "type": "integer",
+            "format": "date-time"
+          },
+          {
+            "name": "duration",
+            "in": "query",
+            "description": "id of run's route",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "id of run's route",
+            "required": false,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "note",
+            "in": "query",
+            "description": "id of run's route",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/SavedResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/BadRequestResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Run not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/run/delete/{run_id}/": {
+      "delete": {
+        "tags": [
+          "run"
+        ],
+        "summary": "Deletes the run with the specified id",
+        "description": "",
+        "operationId": "deleteRun",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "id of run to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/DeletedResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Run not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/run/user/": {
+      "get": {
+        "tags": [
+          "run"
+        ],
+        "description": "Returns a list with a user's runs",
+        "operationId": "listRuns",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Run"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/route/{route_id}/": {
+      "get": {
+        "tags": [
+          "route"
+        ],
+        "summary": "Find route by id",
+        "description": "Returns a single route",
+        "operationId": "getRouteById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "route_id",
+            "in": "path",
+            "description": "id of route to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/Route"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Route not found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/route/create/": {
+      "post": {
+        "tags": [
+          "route"
+        ],
+        "summary": "Creates a new route",
+        "description": "",
+        "operationId": "createRoute",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "query",
+            "description": "route's title",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "traveled distance",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "elevation_gain",
+            "in": "query",
+            "description": "traveled height",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "descirption of the route",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "link",
+            "in": "query",
+            "description": "link to route description",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/SavedResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/BadRequestResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Route not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/route/edit/{route_id}/": {
+      "put": {
+        "tags": [
+          "route"
+        ],
+        "summary": "Update an existing pet",
+        "description": "",
+        "operationId": "routeUpdate",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "route_id",
+            "in": "path",
+            "description": "id of route to edit",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "description": "route's title",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "traveled distance",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "elevation_gain",
+            "in": "query",
+            "description": "traveled height",
+            "required": true,
+            "type": "number",
+            "format": "float"
+          },
+          {
+            "name": "description",
+            "in": "query",
+            "description": "descirption of the route",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "link",
+            "in": "query",
+            "description": "link to route description",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/SavedResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/BadRequestResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Route not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/route/delete/{run_id}/": {
+      "delete": {
+        "tags": [
+          "route"
+        ],
+        "summary": "Deletes the run with the specified id",
+        "description": "",
+        "operationId": "deleteRoute",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "description": "id of run to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/DeletedResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Run not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/route/list/": {
+      "get": {
+        "tags": [
+          "route"
+        ],
+        "description": "Returns a list with a user's runs",
+        "operationId": "listRoutesUser",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Run"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/route/user/": {
+      "get": {
+        "tags": [
+          "route"
+        ],
+        "description": "Returns a list with a user's runs",
+        "operationId": "listRoutes",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Run"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/group/{group_id}/": {
+      "get": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Find group by id",
+        "description": "Returns a single group",
+        "operationId": "getGroupById",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "description": "id of group to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/Group"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Group not found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/group/create/": {
+      "post": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Creates a new group",
+        "description": "",
+        "operationId": "createGroup",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "name of new group",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "description of new group",
+            "type": "string",
+            "format": "float"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/SavedResponse"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/BadRequestResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Group not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/group/edit/{group_id}/": {
+      "put": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Update an existing pet",
+        "description": "",
+        "operationId": "updateGroup",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "description": "id of group to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "name of new group",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "distance",
+            "in": "query",
+            "description": "description of new group",
+            "type": "string",
+            "format": "float"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/SavedResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Group not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/group/delete/{group_id}/": {
+      "delete": {
+        "tags": [
+          "group"
+        ],
+        "summary": "Deletes the group with the specified id",
+        "description": "",
+        "operationId": "deleteGroup",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "path",
+            "description": "id of group to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "schema": {
+              "$ref": "#/definitions/DeletedResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          },
+          "404": {
+            "description": "Run not found",
+            "schema": {
+              "$ref": "#/definitions/404Response"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/group/list/": {
+      "get": {
+        "tags": [
+          "group"
+        ],
+        "description": "Returns a list with all groups",
+        "operationId": "listGroupsUser",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    },
+    "/group/user/": {
+      "get": {
+        "tags": [
+          "group"
+        ],
+        "description": "Returns a list with a user's groups",
+        "operationId": "listGroups",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Group"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/UnauthorizedResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "securityDefinitions": {
+    "BearerAuth": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "description": "Access Token can be aquired with /auth/login/ endpoint",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "Run": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "creator_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "route_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "if null: fields istn't part of json object"
+        },
+        "distance": {
+          "type": "number",
+          "format": "float"
+        },
+        "elevation_gain": {
+          "type": "number",
+          "format": "float"
+        },
+        "type": {
+          "type": "string",
+          "description": "Activity Type (not just run)",
+          "enum": [
+            "WALK",
+            "RUN",
+            "BIKE",
+            "E-BIKE"
+          ]
+        },
+        "time_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "note": {
+          "type": "string",
+          "description": "if null: fields istn't part of json object"
+        },
+        "group_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "if null: fields istn't part of json object"
+        }
+      }
+    },
+    "Route": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "creator_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "route_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "if null: fields istn't part of json object"
+        },
+        "distance": {
+          "type": "number",
+          "format": "float"
+        },
+        "elevation_gain": {
+          "type": "number",
+          "format": "float"
+        },
+        "type": {
+          "type": "string",
+          "description": "Activity Type (not just run)",
+          "enum": [
+            "WALK",
+            "RUN",
+            "BIKE",
+            "E-BIKE"
+          ]
+        },
+        "time_start": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "note": {
+          "type": "string",
+          "description": "if null: fields istn't part of json object"
+        },
+        "group_id": {
+          "type": "integer",
+          "format": "int64",
+          "description": "if null: fields istn't part of json object"
+        }
+      }
+    },
+    "Group": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "creator_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string",
+          "description": "if null: fields istn't part of json object"
+        },
+        "score": {
+          "type": "number",
+          "format": "float"
+        },
+        "run_count": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "num_participants": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sum_duration": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "sum_distance_walk": {
+          "type": "number",
+          "format": "float"
+        },
+        "sum_distance_run": {
+          "type": "number",
+          "format": "float"
+        },
+        "sum_distance_bike": {
+          "type": "number",
+          "format": "float"
+        },
+        "sum_distance_ebike": {
+          "type": "number",
+          "format": "float"
+        }
+      }
+    },
+    "UserIds": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "profile_id": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "An access_token"
+        }
+      }
+    },
+    "BadLoginResponse": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "Dieses Feld ist zwingend erforderlich."
+        },
+        "password": {
+          "type": "string",
+          "example": "Dieses Feld ist zwingend erforderlich."
+        }
+      }
+    },
+    "UserIdResponse": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "integer",
+          "example": 123
+        },
+        "profile_id": {
+          "type": "integer",
+          "example": 123
+        }
+      }
+    },
+    "BadRequestResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": "400-1"
+        },
+        "status": {
+          "type": "string",
+          "example": "error"
+        },
+        "detail": {
+          "type": "string",
+          "example": "This {route/group} does not exist!"
+        }
+      }
+    },
+    "404Response": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "example": 404
+        },
+        "status": {
+          "type": "string",
+          "example": "error"
+        },
+        "detail": {
+          "type": "string",
+          "example": "This {run/route/group} does not exist!"
+        }
+      }
+    },
+    "SavedResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "example": 201
+        },
+        "status": {
+          "type": "string",
+          "example": "successful"
+        },
+        "id": {
+          "type": "integer",
+          "description": "id of {created/edited} {run/route/group}",
+          "example": 42
+        }
+      }
+    },
+    "DeletedResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "example": 200
+        },
+        "status": {
+          "type": "string",
+          "example": "successful"
+        }
+      }
+    },
+    "UnauthorizedResponse": {
+      "type": "object",
+      "properties": {
+        "detail": {
+          "type": "string",
+          "example": "Authentication credentials were not provided."
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}
