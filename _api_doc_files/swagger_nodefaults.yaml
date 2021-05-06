@@ -167,7 +167,7 @@ paths:
           required: false
           type: number
           format: float
-          # default: 0
+          default: 0 (when not specified)
         - name: type
           in: query
           description: activitiy type
@@ -190,22 +190,22 @@ paths:
           required: true
           type: integer
           format: int64
-          # default: null
+          default: null (when not specified)
         - name: group_id
           in: query
           description: id of run's route
           required: false
           type: integer
           format: int64
-          # default: null
+          default: null
         - name: note
           in: query
           description: id of run's route
           required: false
           type: string
-          # default: null
+          default: null
       responses:
-        '200':
+        '201':
           description: successful
           schema:
             $ref: '#/definitions/SavedResponse'
@@ -248,7 +248,7 @@ paths:
           required: false
           type: integer
           format: int64
-          # default: null
+          default: null
         - name: distance
           in: query
           description: traveled distance (when route specified route.distance will be used)
@@ -261,7 +261,7 @@ paths:
           required: false
           type: number
           format: float
-          # default: 0
+          default: 0 (when not specified)
         - name: type
           in: query
           description: activitiy type
@@ -284,20 +284,20 @@ paths:
           required: true
           type: integer
           format: int64
-          # default: null
+          default: null (when not specified)
         - name: group_id
           in: query
           description: id of run's route
           required: false
           type: integer
           format: int64
-          # default: null
+          default: null
         - name: note
           in: query
           description: id of run's route
           required: false
           type: string
-          # default: null
+          default: null
       responses:
         '200':
           description: successful
@@ -439,15 +439,15 @@ paths:
           description: descirption of the route
           required: false
           type: string
-          # default: null
+          default: null
         - name: link
           in: query
           description: link to route description
           required: false
           type: string
-          # default: null
+          default: null
       responses:
-        '200':
+        '201':
           description: successful
           schema:
             $ref: '#/definitions/SavedResponse'
@@ -507,13 +507,13 @@ paths:
           description: descirption of the route
           required: false
           type: string
-          # default: null
+          default: null
         - name: link
           in: query
           description: link to route description
           required: false
           type: string
-          # default: null
+          default: null
       responses:
         '200':
           description: successful
@@ -659,14 +659,14 @@ paths:
           description: name of new group
           required: true
           type: string
-          # default: null
+          default: null
         - name: distance
           in: query
           description: description of new group
           type: string
           format: float
       responses:
-        '200':
+        '201':
           description: successful
           schema:
             $ref: '#/definitions/SavedResponse'
@@ -708,7 +708,7 @@ paths:
           description: name of new group
           required: true
           type: string
-          # default: null
+          default: null
         - name: distance
           in: query
           description: description of new group
@@ -829,7 +829,7 @@ definitions:
       route_id:
         type: integer
         format: int64
-        # default: null
+        default: null
         description: "if null: fields istn't part of json object"
       distance:
         type: number
@@ -853,12 +853,12 @@ definitions:
         format: int64
       note:
         type: string
-        # default: null
+        default: null
         description: "if null: fields istn't part of json object"
       group_id:
         type: integer
         format: int64
-        # default: null
+        default: null
         description: "if null: fields istn't part of json object"
   Route:
     type: object
@@ -872,7 +872,7 @@ definitions:
       route_id:
         type: integer
         format: int64
-        # default: null
+        default: null
         description: "if null: fields istn't part of json object"
       distance:
         type: number
@@ -896,12 +896,12 @@ definitions:
         format: int64
       note:
         type: string
-        # default: null
+        default: null
         description: "if null: fields istn't part of json object"
       group_id:
         type: integer
         format: int64
-        # default: null
+        default: null
         description: "if null: fields istn't part of json object"
 
   Group:
@@ -917,41 +917,41 @@ definitions:
         type: string
       description:
         type: string
-        # default: null
+        default: null
         description: "if null: fields istn't part of json object"
       score:
         type: number
         format: float
-        # default: 0
+        default: 0
       run_count:
         type: integer
         format: int64
-        # default: 0
+        default: 0
       num_participants:
         type: integer
         format: int64
-        # default: 0
+        default: 0
       sum_duration:
         type: integer
         format: int64
-        # default: 0
+        default: 0
         
       sum_distance_walk:
         type: number
         format: float
-        # default: 0
+        default: 0
       sum_distance_run:
         type: number
         format: float
-        # default: 0
+        default: 0
       sum_distance_bike:
         type: number
-        # default: 0
+        default: 0
         format: float
       sum_distance_ebike:
         type: number
         format: float
-        # default: 0
+        default: 0
         
   UserIds:
     type: object
